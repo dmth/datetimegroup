@@ -12,7 +12,7 @@
 See: http://dmth.eu/datetimegroup.html
 The file is not autodeployed, it may not represent the most recent state.
 
-## Contibutions:
+## Contributions:
 Contributions are welcome! See To-Do list below for ideas.
 
 When adding icons, please use icons from the public-domain set: https://github.com/davidmerfield/Public-Icons and recolor them to #e6e6e6ff.
