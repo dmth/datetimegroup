@@ -15,8 +15,9 @@ The file is not autodeployed, it may not represent the most recent state.
 ## Contibutions:
 Contributions are welcome! See To-Do list below for ideas.
 
-When adding icons, please use icons from https://github.com/davidmerfield/Public-Icons and recolor them to #e6e6e6ff
-Icons are integrated as data-urls. For simplicity http://b64.io/ was used for the conversion.
+When adding icons, please use icons from the public-domain set: https://github.com/davidmerfield/Public-Icons and recolor them to #e6e6e6ff.
+
+Icons are integrated as data-urls. For simplicity http://b64.io/ was used for the conversion to base64 and tidying of the svg.
 
 ## To-Dos:
  * Add a timezone identifier to the datetimegroup
