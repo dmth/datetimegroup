@@ -1,0 +1,345 @@
+<html lang="en">
+<!--
+About: This is a simple JS-application which shows a resettable
+date-time-group clock. You can find this notation in all sorts of european disaster-relief contexts, or NATO military cotext.
+Author: Dustin Demuth <mail@dmth.eu>
+License: 
+
+Third-party-Content / Ackknowledgements
+ - This page integrates Icons from http://publicicons.org/
+   See repo: https://github.com/davidmerfield/Public-Icons
+
+I recolored them to #e6e6e6ff
+
+Notes:
+ - You can create Data-URL-SVGs base64-content like this:
+ cat gear.svg | base64 -w 0
+ but they will most likely not work because of quotes in svg.
+ So i just pumped data through http://b64.io/
+
+TODO:
+ - Add TimeZone Identifier
+-->
+<meta charset="utf-8">
+<link  rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAA40lEQVQoFQXBQUoCUQAA0Dd+VyUoLdpFRaRtQl1ks2yoQ3SCTFx2jSDMzlH7VIJu0LKmCYJp0QlyIvy9lwAg0bZvpfAKAEAw9i6KoqgwUgeApieViSMnMsduLc21AIKF0qHEKYCe0kwAxn50sSU6A9BTGQIfJoBnDwCYyuFANACc+7MNIBW1a3awDrgXvdgArGGvpgaAX98aPl3bBKzoiAYAaLjy5QapqA25CQCgro47OXCp0gUA0Ld0AQQLpT4A6Cs9CgBNc0tTqUwmNVWZaQFAMFKIoijKDQUgAQAdu4LcGwD/1OlD7ZmN0ywAAAAASUVORK5CYII=" />
+
+<head>
+<title>Datetimegroup</title>
+
+<style>
+.reload {
+	background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgICB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiICAgeG1sbnM6aW5rc2NhcGU9Imh0dHA6Ly93d3cuaW5rc2NhcGUub3JnL25hbWVzcGFjZXMvaW5rc2NhcGUiICAgdmVyc2lvbj0iMS4xIiAgIGlkPSJMYXllcl8xIiAgIHg9IjBweCIgICB5PSIwcHgiICAgd2lkdGg9IjEyMHB4IiAgIGhlaWdodD0iMTIwcHgiICAgdmlld0JveD0iMCAwIDEyMCAxMjAiICAgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTIwIDEyMCIgICB4bWw6c3BhY2U9InByZXNlcnZlIiAgIHNvZGlwb2RpOmRvY25hbWU9InJlbG9hZC5zdmciICAgaW5rc2NhcGU6dmVyc2lvbj0iMC45Mi4xIHIiPjxtZXRhZGF0YSAgICAgaWQ9Im1ldGFkYXRhMTciPjxyZGY6UkRGPjxjYzpXb3JrICAgICAgICAgcmRmOmFib3V0PSIiPjxkYzpmb3JtYXQ+aW1hZ2Uvc3ZnK3htbDwvZGM6Zm9ybWF0PjxkYzp0eXBlICAgICAgICAgICByZGY6cmVzb3VyY2U9Imh0dHA6Ly9wdXJsLm9yZy9kYy9kY21pdHlwZS9TdGlsbEltYWdlIiAvPjwvY2M6V29yaz48L3JkZjpSREY+PC9tZXRhZGF0YT48ZGVmcyAgICAgaWQ9ImRlZnMxNSIgLz48c29kaXBvZGk6bmFtZWR2aWV3ICAgICBwYWdlY29sb3I9IiNmZmZmZmYiICAgICBib3JkZXJjb2xvcj0iIzY2NjY2NiIgICAgIGJvcmRlcm9wYWNpdHk9IjEiICAgICBvYmplY3R0b2xlcmFuY2U9IjEwIiAgICAgZ3JpZHRvbGVyYW5jZT0iMTAiICAgICBndWlkZXRvbGVyYW5jZT0iMTAiICAgICBpbmtzY2FwZTpwYWdlb3BhY2l0eT0iMCIgICAgIGlua3NjYXBlOnBhZ2VzaGFkb3c9IjIiICAgICBpbmtzY2FwZTp3aW5kb3ctd2lkdGg9IjEyODAiICAgICBpbmtzY2FwZTp3aW5kb3ctaGVpZ2h0PSI3NDQiICAgICBpZD0ibmFtZWR2aWV3MTMiICAgICBzaG93Z3JpZD0iZmFsc2UiICAgICBpbmtzY2FwZTp6b29tPSIxLjk2NjY2NjciICAgICBpbmtzY2FwZTpjeD0iLTE3Ljc5NjYxIiAgICAgaW5rc2NhcGU6Y3k9IjYwIiAgICAgaW5rc2NhcGU6d2luZG93LXg9IjAiICAgICBpbmtzY2FwZTp3aW5kb3cteT0iMCIgICAgIGlua3NjYXBlOndpbmRvdy1tYXhpbWl6ZWQ9IjEiICAgICBpbmtzY2FwZTpjdXJyZW50LWxheWVyPSJMYXllcl8xIiAvPjxnICAgICBpZD0iZzQiPjxwYXRoICAgICAgIGQ9Ik02MCw5NS41Yy0xOS41NzUsMC0zNS41LTE1LjkyNi0zNS41LTM1LjVjMC0xOS41NzUsMTUuOTI1LTM1LjUsMzUuNS0zNS41YzEzLjYyLDAsMjUuNDY3LDcuNzE0LDMxLjQxOCwxOWgyMi42MjcgICBDMTA2Ljk4NCwyMC4zNDcsODUuNDYyLDMuNSw2MCwzLjVDMjguNzk2LDMuNSwzLjUsMjguNzk2LDMuNSw2MGMwLDMxLjIwMywyNS4yOTYsNTYuNSw1Ni41LDU2LjUgICBjMTYuMjY0LDAsMzAuOTExLTYuODgyLDQxLjIyMS0xNy44OEw4NS44ODksODQuMjU1Qzc5LjQwNiw5MS4xNjgsNzAuMjAxLDk1LjUsNjAsOTUuNXoiICAgICAgIGlkPSJwYXRoMiIgICAgICAgc3R5bGU9InN0cm9rZTpub25lO3N0cm9rZS1vcGFjaXR5OjE7ZmlsbDojZTZlNmU2O2ZpbGwtb3BhY2l0eToxIiAvPjwvZz48bGluZSAgICAgZmlsbD0ibm9uZSIgICAgIHgxPSIxMjAiICAgICB5MT0iMCIgICAgIHgyPSIxMjAiICAgICB5Mj0iNDUuMzM2IiAgICAgaWQ9ImxpbmU2IiAvPjxsaW5lICAgICBmaWxsPSJub25lIiAgICAgeDE9IjkxLjQxOCIgICAgIHkxPSI0My41IiAgICAgeDI9IjExNC4wNDUiICAgICB5Mj0iNDMuNSIgICAgIGlkPSJsaW5lOCIgLz48cG9seWdvbiAgICAgcG9pbnRzPSIxMjAsMjEuODMyIDExOS45OTIsNjguODQyIDc0LjgyNyw1NS44MTEgIiAgICAgaWQ9InBvbHlnb24xMCIgICAgIHN0eWxlPSJmaWxsOiNlNmU2ZTY7ZmlsbC1vcGFjaXR5OjEiIC8+PC9zdmc+);
+}
+
+.gear {
+	background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgICB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiICAgeG1sbnM6aW5rc2NhcGU9Imh0dHA6Ly93d3cuaW5rc2NhcGUub3JnL25hbWVzcGFjZXMvaW5rc2NhcGUiICAgdmVyc2lvbj0iMS4xIiAgIGlkPSJMYXllcl8xIiAgIHg9IjBweCIgICB5PSIwcHgiICAgd2lkdGg9IjEyMHB4IiAgIGhlaWdodD0iMTIwcHgiICAgdmlld0JveD0iMCAwIDEyMCAxMjAiICAgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTIwIDEyMCIgICB4bWw6c3BhY2U9InByZXNlcnZlIiAgIHNvZGlwb2RpOmRvY25hbWU9ImdlYXIuc3ZnIiAgIGlua3NjYXBlOnZlcnNpb249IjAuOTIuMSByIj48bWV0YWRhdGEgICAgIGlkPSJtZXRhZGF0YTkiPjxyZGY6UkRGPjxjYzpXb3JrICAgICAgICAgcmRmOmFib3V0PSIiPjxkYzpmb3JtYXQ+aW1hZ2Uvc3ZnK3htbDwvZGM6Zm9ybWF0PjxkYzp0eXBlICAgICAgICAgICByZGY6cmVzb3VyY2U9Imh0dHA6Ly9wdXJsLm9yZy9kYy9kY21pdHlwZS9TdGlsbEltYWdlIiAvPjwvY2M6V29yaz48L3JkZjpSREY+PC9tZXRhZGF0YT48ZGVmcyAgICAgaWQ9ImRlZnM3IiAvPjxzb2RpcG9kaTpuYW1lZHZpZXcgICAgIHBhZ2Vjb2xvcj0iI2ZmZmZmZiIgICAgIGJvcmRlcmNvbG9yPSIjNjY2NjY2IiAgICAgYm9yZGVyb3BhY2l0eT0iMSIgICAgIG9iamVjdHRvbGVyYW5jZT0iMTAiICAgICBncmlkdG9sZXJhbmNlPSIxMCIgICAgIGd1aWRldG9sZXJhbmNlPSIxMCIgICAgIGlua3NjYXBlOnBhZ2VvcGFjaXR5PSIwIiAgICAgaW5rc2NhcGU6cGFnZXNoYWRvdz0iMiIgICAgIGlua3NjYXBlOndpbmRvdy13aWR0aD0iMTI4MCIgICAgIGlua3NjYXBlOndpbmRvdy1oZWlnaHQ9Ijc0NCIgICAgIGlkPSJuYW1lZHZpZXc1IiAgICAgc2hvd2dyaWQ9ImZhbHNlIiAgICAgaW5rc2NhcGU6em9vbT0iMS45NjY2NjY3IiAgICAgaW5rc2NhcGU6Y3g9IjYwIiAgICAgaW5rc2NhcGU6Y3k9IjYwIiAgICAgaW5rc2NhcGU6d2luZG93LXg9IjAiICAgICBpbmtzY2FwZTp3aW5kb3cteT0iMCIgICAgIGlua3NjYXBlOndpbmRvdy1tYXhpbWl6ZWQ9IjEiICAgICBpbmtzY2FwZTpjdXJyZW50LWxheWVyPSJMYXllcl8xIiAvPjxwYXRoICAgICBmaWxsPSIjMDEwMTAxIiAgICAgZD0iTTExNC4yNTEsNzAuNzMxYzIuMjExLDAsNC4yNzEtMS43OTMsNC41NzItMy45ODVjMCwwLDAuNDIyLTMuMDgxLDAuNDIyLTYuNzQ1cy0wLjQyMi02Ljc0NS0wLjQyMi02Ljc0NSAgYy0wLjMwNC0yLjE5My0yLjM2MS0zLjk4Ni00LjU3Mi0zLjk4NmgtMTEuNDMzYy0yLjIxNCwwLTQuNTEyLTEuNDExLTUuMTA2LTMuMTM1cy0xLjQxNC03LjI1NSwwLjE1MS04LjgxOWw4LjA4LTguMDgxICBjMS41NjQtMS41NjUsMS42ODYtNC4yMzYsMC4yNjktNS45MzdsLTkuNTA3LTkuNTFjLTEuNzAxLTEuNDE4LTQuMzcxLTEuMjk4LTUuOTM4LDAuMjY4bC04LjA4LDguMDgxICBjLTEuNTY0LDEuNTY2LTQuMTczLDIuMTk2LTUuNzkzLDEuNDAyYy0xLjYyLTAuNzk0LTYuMTYzLTQuMTQzLTYuMTYzLTYuMzU2VjUuNzVjMC0yLjIxMy0xLjc5NC00LjI3MS0zLjk4NS00LjU3MiAgYzAsMC0zLjA4MS0wLjQyNC02Ljc0NS0wLjQyNHMtNi43NDUsMC40MjQtNi43NDUsMC40MjRjLTIuMTkzLDAuMzAxLTMuOTg4LDIuMzU5LTMuOTg4LDQuNTcydjExLjQzMyAgYzAsMi4yMTMtMS40MSw0LjUxMS0zLjEzNSw1LjEwNmMtMS43MjUsMC41OTUtNy4yNTUsMS40MTQtOC44Mi0wLjE1MWwtOC4wODEtOC4wODFjLTEuNTY1LTEuNTY1LTQuMjM2LTEuNjg2LTUuOTM2LTAuMjY5ICBsLTkuNTA5LDkuNTA5Yy0xLjQxOCwxLjcwMS0xLjI5OCw0LjM3MSwwLjI2OCw1LjkzN2w4LjA4LDguMDgxYzEuNTY1LDEuNTY1LDIuMTk3LDQuMTcyLDEuNDAyLDUuNzkyICBjLTAuNzk1LDEuNjItNC4xNDMsNi4xNjMtNi4zNTYsNi4xNjNINS43NWMtMi4yMTMsMC00LjI3MSwxLjc5NC00LjU3MywzLjk4NmMwLDAtMC40MjQsMy4wODEtMC40MjQsNi43NDQgIGMwLDMuNjY1LDAuNDI0LDYuNzQ0LDAuNDI0LDYuNzQ0YzAuMzAxLDIuMTk0LDIuMzU5LDMuOTg3LDQuNTczLDMuOTg3aDExLjQzM2MyLjIxMywwLDQuNTExLDEuNDA5LDUuMTA1LDMuMTM1ICBjMC41OTUsMS43MjUsMS40MTQsNy4yNTQtMC4xNTIsOC44MThsLTguMDgsOC4wODFjLTEuNTY1LDEuNTY1LTEuNjg2LDQuMjM2LTAuMjY4LDUuOTM4bDkuNTA4LDkuNTA5ICBjMS43MDEsMS40MTcsNC4zNywxLjI5OSw1LjkzNi0wLjI2OWw4LjA4MS04LjA4YzEuNTY1LTEuNTY0LDQuMTcyLTIuMTk1LDUuNzkzLTEuNDAxYzEuNjIxLDAuNzk0LDYuMTYyLDQuMTQzLDYuMTYyLDYuMzU1djExLjQzMyAgYzAsMi4yMTIsMS43OTQsNC4yNywzLjk4OCw0LjU3YzAsMCwzLjA4LDAuNDI0LDYuNzQ1LDAuNDI0YzMuNjY1LDAsNi43NDUtMC40MjQsNi43NDUtMC40MjRjMi4xOTMtMC4zMDEsMy45ODUtMi4zNTgsMy45ODUtNC41NyAgdi0xMS40MzNjMC0yLjIxMywxLjQxMS00LjUxMiwzLjEzNi01LjEwNmMxLjcyNi0wLjU5NSw3LjI1Ni0xLjQxMyw4LjgyLDAuMTUxbDguMDgsOC4wODFjMS41NjUsMS41NjMsNC4yMzYsMS42ODYsNS45MzgsMC4yNjggIGw5LjUwNy05LjUwNmMxLjQxNy0xLjcwMSwxLjI5OS00LjM3LTAuMjY5LTUuOTM4bC04LjA4LTguMDhjLTEuNTY1LTEuNTY0LTIuMTk3LTQuMTcyLTEuNDAxLTUuNzkzICBjMC43OTQtMS42Miw0LjE0My02LjE2Myw2LjM1NS02LjE2M0gxMTQuMjUxeiBNNjAsODEuNjg3Yy0xMS45NzcsMC0yMS42ODYtOS43MDctMjEuNjg2LTIxLjY4NyAgYzAtMTEuOTc2LDkuNzA5LTIxLjY4NiwyMS42ODYtMjEuNjg2YzExLjk3NywwLDIxLjY4Nyw5LjcwOSwyMS42ODcsMjEuNjg2QzgxLjY4Nyw3MS45NzcsNzEuOTc3LDgxLjY4Nyw2MCw4MS42ODd6IiAgICAgaWQ9InBhdGgyIiAgICAgc3R5bGU9ImZpbGw6I2U2ZTZlNiIgLz48L3N2Zz4=);
+}
+
+.clock {
+	background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgICB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiICAgeG1sbnM6aW5rc2NhcGU9Imh0dHA6Ly93d3cuaW5rc2NhcGUub3JnL25hbWVzcGFjZXMvaW5rc2NhcGUiICAgdmVyc2lvbj0iMS4xIiAgIGlkPSJMYXllcl8xIiAgIHg9IjBweCIgICB5PSIwcHgiICAgd2lkdGg9IjEyMHB4IiAgIGhlaWdodD0iMTIwcHgiICAgdmlld0JveD0iMCAwIDEyMCAxMjAiICAgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTIwIDEyMCIgICB4bWw6c3BhY2U9InByZXNlcnZlIiAgIHNvZGlwb2RpOmRvY25hbWU9ImNsb2NrLnN2ZyIgICBpbmtzY2FwZTp2ZXJzaW9uPSIwLjkyLjEgciI+PG1ldGFkYXRhICAgICBpZD0ibWV0YWRhdGExMSI+PHJkZjpSREY+PGNjOldvcmsgICAgICAgICByZGY6YWJvdXQ9IiI+PGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+PGRjOnR5cGUgICAgICAgICAgIHJkZjpyZXNvdXJjZT0iaHR0cDovL3B1cmwub3JnL2RjL2RjbWl0eXBlL1N0aWxsSW1hZ2UiIC8+PC9jYzpXb3JrPjwvcmRmOlJERj48L21ldGFkYXRhPjxkZWZzICAgICBpZD0iZGVmczkiIC8+PHNvZGlwb2RpOm5hbWVkdmlldyAgICAgcGFnZWNvbG9yPSIjZmZmZmZmIiAgICAgYm9yZGVyY29sb3I9IiM2NjY2NjYiICAgICBib3JkZXJvcGFjaXR5PSIxIiAgICAgb2JqZWN0dG9sZXJhbmNlPSIxMCIgICAgIGdyaWR0b2xlcmFuY2U9IjEwIiAgICAgZ3VpZGV0b2xlcmFuY2U9IjEwIiAgICAgaW5rc2NhcGU6cGFnZW9wYWNpdHk9IjAiICAgICBpbmtzY2FwZTpwYWdlc2hhZG93PSIyIiAgICAgaW5rc2NhcGU6d2luZG93LXdpZHRoPSIxMjgwIiAgICAgaW5rc2NhcGU6d2luZG93LWhlaWdodD0iNzQ0IiAgICAgaWQ9Im5hbWVkdmlldzciICAgICBzaG93Z3JpZD0iZmFsc2UiICAgICBpbmtzY2FwZTp6b29tPSI0IiAgICAgaW5rc2NhcGU6Y3g9IjMuMTE0MjgzIiAgICAgaW5rc2NhcGU6Y3k9IjU5LjA0MDI3OSIgICAgIGlua3NjYXBlOndpbmRvdy14PSIwIiAgICAgaW5rc2NhcGU6d2luZG93LXk9IjAiICAgICBpbmtzY2FwZTp3aW5kb3ctbWF4aW1pemVkPSIxIiAgICAgaW5rc2NhcGU6Y3VycmVudC1sYXllcj0iZzQiICAgICBzaG93Z3VpZGVzPSJmYWxzZSIgLz48ZyAgICAgaWQ9Imc0Ij48cGF0aCAgICAgICBzdHlsZT0ib3BhY2l0eToxO2ZpbGw6I2U2ZTZlNjtmaWxsLW9wYWNpdHk6MC45NDExNzY0NztmaWxsLXJ1bGU6bm9uemVybztzdHJva2Utd2lkdGg6MS40Nzc5NzgzNTtzdHJva2U6bm9uZSIgICAgICAgZD0iTSA2MCA1IEwgNTcuNDUxMTcyIDUuMDU4NTkzOCBBIDU1IDU1IDAgMCAwIDUuMDMzMjAzMSA2MS45MTIxMDkgQSA1NSA1NSAwIDAgMCA2MS4yNzUzOTEgMTE0Ljk4NDM4IEEgNTUgNTUgMCAwIDAgMTE0Ljk5NjA5IDU5LjM2MzI4MSBBIDU1IDU1IDAgMCAwIDYwIDUgeiBNIDYwIDE1IEEgNDUgNDUgMCAwIDEgMTA0Ljk5ODA1IDU5LjQ3ODUxNiBBIDQ1IDQ1IDAgMCAxIDYxLjA0Mjk2OSAxMDQuOTg4MjggQSA0NSA0NSAwIDAgMSAxNS4wMjczNDQgNjEuNTY0NDUzIEEgNDUgNDUgMCAwIDEgNTcuOTE2MDE2IDE1LjA0ODgyOCBMIDYwIDE1IHogIiAgICAgICBpZD0icGF0aDQ0ODgiIC8+PHBhdGggICAgICAgc3R5bGU9Im9wYWNpdHk6MTtmaWxsOiNlNmU2ZTY7ZmlsbC1vcGFjaXR5OjAuOTQxMTc2NDc7ZmlsbC1ydWxlOm5vbnplcm87c3Ryb2tlOm5vbmU7c3Ryb2tlLXdpZHRoOjEuMjA2OTg2NDMiICAgICAgIGQ9Im0gODcuMDk1Mzg3LDcyLjg3NzIgYyAtMS4xODkwMjksMi41MDE4MjIgLTQuMTYwMzYzLDMuNTU4NjkyIC02LjY2MjE4NSwyLjM2OTY2MyBMIDU3Ljg1MzU4Niw2NC41MTU1NTcgYyAtMi41MDE4MjIsLTEuMTg5MDI4IC0zLjU1ODY5MSwtNC4xNjAzNjIgLTIuMzY5NjYyLC02LjY2MjE4NCAxLjE4OTAyOCwtMi41MDE4MjIgNC4xNjAzNjIsLTMuNTU4NjkxIDYuNjYyMTg0LC0yLjM2OTY2MiBsIDIyLjU3OTYxNywxMC43MzEzMDUgYyAyLjUwMTgyMSwxLjE4OTAyOSAzLjU1ODY5LDQuMTYwMzYzIDIuMzY5NjYyLDYuNjYyMTg0IHoiICAgICAgIGlkPSJyZWN0NDUxMC02IiAgICAgICBpbmtzY2FwZTpjb25uZWN0b3ItY3VydmF0dXJlPSIwIiAgICAgICBpbmtzY2FwZTp0cmFuc2Zvcm0tY2VudGVyLXg9Ii0xMS4yODk4MDgiICAgICAgIGlua3NjYXBlOnRyYW5zZm9ybS1jZW50ZXIteT0iNS4zNjU2NTI5IiAvPjxwYXRoICAgICAgIHN0eWxlPSJvcGFjaXR5OjE7ZmlsbDojZTZlNmU2O2ZpbGwtb3BhY2l0eTowLjk0MTE3NjQ3O2ZpbGwtcnVsZTpub256ZXJvO3N0cm9rZTpub25lO3N0cm9rZS13aWR0aDoxLjI5MDMyMjc4IiAgICAgICBkPSJtIDQ2LjU2NjY0OSwyNy42ODAwOTkgYyAyLjU1Nzg1NywtMS4wNjMxNDIgNS40NzI5NTcsMC4xNDAxODQgNi41MzYwOTksMi42OTgwNDEgTCA2NC42MTY5Miw1OC4wODA1NTUgYyAxLjA2MzE0MiwyLjU1Nzg1NyAtMC4xNDAxODQsNS40NzI5NTYgLTIuNjk4MDQsNi41MzYwOTggLTIuNTU3ODU3LDEuMDYzMTQyIC01LjQ3Mjk1NiwtMC4xNDAxODQgLTYuNTM2MDk4LC0yLjY5ODA0IEwgNDMuODY4NjA5LDM0LjIxNjE5NyBjIC0xLjA2MzE0MiwtMi41NTc4NTYgMC4xNDAxODQsLTUuNDcyOTU2IDIuNjk4MDQsLTYuNTM2MDk4IHoiICAgICAgIGlkPSJyZWN0NDUxMCIgICAgICAgaW5rc2NhcGU6Y29ubmVjdG9yLWN1cnZhdHVyZT0iMCIgICAgICAgaW5rc2NhcGU6dHJhbnNmb3JtLWNlbnRlci15PSItMTMuODUxMjA4IiAgICAgICBpbmtzY2FwZTp0cmFuc2Zvcm0tY2VudGVyLXg9IjUuNzU3MDg2NSIgLz48cGF0aCAgICAgICBzdHlsZT0ib3BhY2l0eToxO2ZpbGw6I2U2ZTZlNjtmaWxsLW9wYWNpdHk6MC45NDExNzY0NztmaWxsLXJ1bGU6bm9uemVybztzdHJva2U6bm9uZTtzdHJva2Utd2lkdGg6MC43ODU2NzQxNSIgICAgICAgZD0ibSA1Ny40OTk4NTEsMTQuOTk5NTg1IGggNSB2IDUgaCAtNSB6IiAgICAgICBpZD0icmVjdDQ1NTMiIC8+PHBhdGggICAgICAgc3R5bGU9Im9wYWNpdHk6MTtmaWxsOiNlNmU2ZTY7ZmlsbC1vcGFjaXR5OjAuOTQxMTc2NDc7ZmlsbC1ydWxlOm5vbnplcm87c3Ryb2tlOm5vbmU7c3Ryb2tlLXdpZHRoOjAuNzg1Njc0MTUiICAgICAgIGQ9Im0gMTQuOTk5ODUyLDU3LjQ5OTU4NCBoIDUgdiA1IGggLTUgeiIgICAgICAgaWQ9InJlY3Q0NTUzLTciIC8+PHBhdGggICAgICAgc3R5bGU9Im9wYWNpdHk6MTtmaWxsOiNlNmU2ZTY7ZmlsbC1vcGFjaXR5OjAuOTQxMTc2NDc7ZmlsbC1ydWxlOm5vbnplcm87c3Ryb2tlOm5vbmU7c3Ryb2tlLXdpZHRoOjAuNzg1Njc0MTUiICAgICAgIGQ9Im0gNTcuNDk5ODUxLDk5Ljk5OTU4OCBoIDUgdiA1LjAwMDAwMiBoIC01IHoiICAgICAgIGlkPSJyZWN0NDU1My03LTUiIC8+PHBhdGggICAgICAgc3R5bGU9Im9wYWNpdHk6MTtmaWxsOiNlNmU2ZTY7ZmlsbC1vcGFjaXR5OjAuOTQxMTc2NDc7ZmlsbC1ydWxlOm5vbnplcm87c3Ryb2tlOm5vbmU7c3Ryb2tlLXdpZHRoOjAuNzg1Njc0MTUiICAgICAgIGQ9Im0gOTkuOTk5ODU1LDU3LjQ5OTU4NCBoIDUuMDAwMDA1IHYgNSBoIC01LjAwMDAwNSB6IiAgICAgICBpZD0icmVjdDQ1NTMtNy01LTMiIC8+PHBhdGggICAgICAgc3R5bGU9Im9wYWNpdHk6MTtmaWxsOiNlNmU2ZTY7ZmlsbC1vcGFjaXR5OjAuOTQxMTc2NDc7ZmlsbC1ydWxlOm5vbnplcm87c3Ryb2tlOm5vbmU7c3Ryb2tlLXdpZHRoOjEuMjI0NDg5ODEiICAgICAgIGQ9Im0gNTkuOTk5ODUxLDUyLjQ5OTU4NCBhIDcuNSw3LjUgMCAwIDEgNy40OTk0OTcsNy40MTMwODUgNy41LDcuNSAwIDAgMSAtNy4zMjU2NzcsNy41ODQ5MDEgNy41LDcuNSAwIDAgMSAtNy42NjkyODcsLTcuMjM3Mjg2IDcuNSw3LjUgMCAwIDEgNy4xNDc5MjIsLTcuNzUyNjQzIiAgICAgICBpZD0icGF0aDQ2MDIiIC8+PC9nPjwvc3ZnPg==);
+}
+
+body {
+    background-color: black;
+    padding: 0;
+    margin: 0; 
+    font-family: sans-serif;
+}
+
+.nofloat {
+    display: block;
+    float: none;
+}
+.content {
+    height: 100vh;
+    width: 90vw;
+    margin: auto;
+}
+
+.clocktexts {
+    height: 2vw;
+    padding: 1vw;
+}
+
+.clockspace {
+}
+
+.clockbox {
+    margin: auto;
+    height: 70vh;
+    width: 90vw;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.controlbox {
+    margin: auto;
+    height: 30vh;
+    width: 90vw;
+    text-align: center;
+    display: table-cell;
+    /*vertical-align: top;*/
+}
+
+.controlbox ul{
+    padding:0;
+    margin:0; 
+}
+
+.controlbox ul li{
+    display: inline;
+}
+
+button {
+    height: 15vh;
+    width: 15vh;
+    border: 1vh solid green;
+    color: white;
+    background-color: transparent;
+    border-radius: 8px;
+}
+
+button:hover {
+    background-color: green; /* Green */
+    color: white;
+    cursor: pointer;
+}
+
+.active {
+    background-color: green;
+}
+
+.disabled {
+    opacity: 0.6;
+}
+
+.disabled:hover {
+    cursor: not-allowed;
+}
+
+.button_background{
+    background-size: 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.clockannotation {
+    display: inline;
+    width: 30%;
+    color: grey;
+    font-size: 2vw;
+    float: left;
+}
+
+.clocktextspace {
+    display: inline;
+    width: 30%;
+    color: grey;
+    font-size: 2vw;
+    float: left;
+}
+
+.runningtime {
+    display: inline;
+    width: 40%;
+    float: right;
+    text-align: right;
+    background-size: auto 80%;
+    background-repeat: no-repeat;
+    background-position: right;
+}
+
+datetimegroup {
+    display: inline-block;
+    width: 100%;
+    color: grey;
+    text-align: center;
+}
+
+.largedtg {
+    font-size: 10vw;
+}
+
+.smalldtg {
+    font-size: 2vw;
+}
+
+datetimegroup > * {
+    /*vertical-align: bottom;*/
+    display: inline-block;
+}
+
+datetimegroup date {
+}
+
+datetimegroup time {
+    margin-left: 5%;
+    margin-right: 5%;
+    color: white;
+}
+
+datetimegroup month {
+}
+
+datetimegroup year {
+    margin-left: 5%;
+}
+
+</style>
+
+<script type="text/javascript">
+
+var CLOCKID;
+var CURRENTTIME;
+
+
+function BuildDateTimeGroup(datetime=CURRENTTIME) {
+
+        var currentT;
+        
+	if (!datetime) {
+		currentT = new Date ( );
+	}
+	else {
+		currentT = datetime;
+	}		
+
+	var currentHours = currentT.getHours();
+	var currentMinutes = currentT.getMinutes();
+	var currentDate = currentT.getDate();
+	var currentYear = currentT.getFullYear() - 2000; //as we will not travel back in time and this code will not last for 100 Years. this is ok.
+	currentHours = ( currentHours < 10 ? "0" : "" ) + currentHours;
+	currentMinutes = ( currentMinutes < 10 ? "0" : "" ) + currentMinutes;
+	currentDate = ( currentDate < 10 ? "0" : "" ) + currentDate;
+	var currentMont = currentT.getMonth();
+	var months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+	var datetimegroup = [];
+	datetimegroup[0] = String(currentDate);
+	datetimegroup[1] = String(currentHours);
+	datetimegroup[2] = String(currentMinutes);
+	datetimegroup[3] = String(months[currentT.getMonth()]);
+	datetimegroup[4] = String(currentYear);
+
+	return datetimegroup;
+}
+
+function DatetimegroupToHTML(datetimegroup, id=rand()) {
+    var datetimegroup = '<datetimegroup id="'+id+'"><date>' 
+                +  datetimegroup[0]
+            + '</date>'
+            +'<time>'
+                +'<hours>' 
+                    +  datetimegroup[1]
+                + '</hours>'
+                +'<minutes>' 
+                    +  datetimegroup[2]
+                + '</minutes>'
+            + '</time>'
+            + '<month>'
+                + datetimegroup[3]
+            + '</month>'
+            + '<year>'
+                + datetimegroup[4]
+            + '</year></datetimegroup>';
+    return datetimegroup;
+}
+
+function UpdateStoppedTime(datetime=CURRENTTIME) {    
+    /* set the time */
+    var id = "largedtg";
+    var dtgHTML = DatetimegroupToHTML(BuildDateTimeGroup(datetime), id);
+    document.getElementById("clockspace").innerHTML = dtgHTML;
+    document.getElementById(id).classList.add('largedtg');
+}
+
+function setStoppedTimeMode() {
+    /* set the button to active */
+    document.getElementById("reset_button").classList.add('active');
+    /* reset the clock button */
+    document.getElementById("clock_button").classList.remove('active');
+    
+    /* Clear the clock, to prevent respawning of the clock element */
+    RespawnClock("clocktextspace_3")
+    
+    UpdateStoppedTime();
+}
+
+function setRunningTimeMode() {
+    /* set the button to active */
+    document.getElementById("clock_button").classList.add('active');
+    /* reset the clock button */
+    document.getElementById("reset_button").classList.remove('active');
+    
+    /* remove the clock */    
+    document.getElementById("clocktextspace_3").innerHTML = "";
+    
+    /* Clear the clock, to prevent respawning of the clock element */
+    RespawnClock("clockspace");
+}
+
+
+function UpdateRunningTime(datetime=CURRENTTIME, where) {
+    /* 
+        Where depicts the ID of the div, where the clock shall be spawned
+    */
+    var id = "dtg";
+    var dtgHTML = DatetimegroupToHTML(BuildDateTimeGroup(datetime), id);
+    document.getElementById(where).innerHTML = dtgHTML;
+    
+    if (where == "clockspace") {
+        document.getElementById(id).classList.add('largedtg');
+    } else {
+        document.getElementById(id).classList.add('smalldtg');
+    }
+}
+
+function Clock(where = null) {
+    CURRENTTIME = new Date();
+    if (where) {
+        UpdateRunningTime(CURRENTTIME, where);
+    }
+    CLOCKID = setTimeout(Clock, 10000, where);
+    return CLOCKID
+}
+
+function RespawnClock(where) {
+    clearTimeout(CLOCKID);
+    CLOCKID = null;
+    Clock(where);
+}
+
+function Start() {
+    Clock();
+    setRunningTimeMode();
+}
+
+</script>
+</head>
+
+<body onload="Start();">
+    <div id="content" class="content">
+        <div id="clockbox" class="clockbox">
+            <div id="clocktexts" class="clocktexts">
+                <div id="clocktextspace_1" class="clocktextspace"></div>
+                <div id="clocktextspace_2" class="clocktextspace"></div>
+                <div id="clocktextspace_3" class="clocktextspace runningtime clock"></div>
+            </div>
+            <div class="nofloat" /></div>
+            <div id="clockspace" /></div>
+	</div>
+	<div class="nofloat"></div>
+	<div id="controlbox" class="controlbox">
+            <ul>
+                <li>
+                    <button id="reset_button" onclick="setStoppedTimeMode()" class="reload button_background active" alt="Reset Clock" title="Stop or reset clock" />
+                </li>
+                <li>
+                    <button id="clock_button" onclick="setRunningTimeMode()" class="clock button_background" alt="Clock" title="Show clock" />
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</body>
+
+</html>
