@@ -8,6 +8,10 @@
    * Stop the clock
    * Show a continious clock
 
+## Sample:
+See: http://dmth.eu/datetimegroup.html
+The file is not autodeployed, it may not represent the most recent state.
+
 ## Contibutions:
 Contributions are welcome! See To-Do list below for ideas.
 
