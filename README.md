@@ -20,7 +20,7 @@ When adding icons, please use icons from the public-domain set: https://github.c
 Icons are integrated as data-urls. For simplicity http://b64.io/ was used for the conversion to base64 and tidying of the svg.
 
 ## To-Dos:
- * Add a timezone identifier to the datetimegroup
+ * Add a timezone identifier to the datetimegroup: See https://en.wikipedia.org/wiki/List_of_military_time_zones and the German: https://de.wikipedia.org/wiki/Datum/Zeit-Gruppe
  * Add a countdown-timer to the application, which starts to flash the time when the timer has run out
  * Create a native app from the page.
 
