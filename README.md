@@ -1,7 +1,7 @@
 # datetimegroup
  A website showing a datetimegroup formatted clock.
  
-## Fatures
+## Features
  * Single-file-application, all javascript and images are build into the html-file
  * Simple use
  * Two Modes:
